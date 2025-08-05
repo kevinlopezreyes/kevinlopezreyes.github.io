@@ -49,7 +49,7 @@ Descargamos la carpeta del proyecto [aqui](https://drive.google.com/drive/folder
 library(tidyverse) # Manipulación, transformación de datos.
 library(sf) # Trabajar con datos vectoriales.
 library(rnaturalearth) # Descargar datos geoespaciales.
-# library(rnaturalearthdata) # Proveer datos para rnaturalearth.
+library(rnaturalearthdata) # Proveer datos para rnaturalearth.
 library(kuenm) # Herramientas para modelado de nicho ecológico.
 library(ggplot2) # Creación de gráficos
 library(terra) # Manejo y análisis de datos espaciales raster y vectoriales.
@@ -62,7 +62,7 @@ Primero exploremos/visualizemos los datos
 # Cargar registros de presencia
 occs_train <- read_csv("occ_train.csv")
 occs_test <- read_csv("occ_test.csv")
-occs_ind <- read_csv("occ_ind.csv")
+occs_inv <- read_csv("occ_inv.csv")
 
 # Visualizar los registros
 ggplot() +
@@ -72,7 +72,7 @@ ggplot() +
              alpha = 0.5, size = 0.4) +
   geom_point(data = occs_test, aes(x = lon, y = lat, colour = "Validacion"),
              alpha = 0.5, size = 0.4) +
-  geom_point(data = occs_ind, aes(x = lon, y = lat, colour = "Invasor"),
+  geom_point(data = occs_inv, aes(x = lon, y = lat, colour = "Invasor"),
              alpha = 0.5, size = 0.4) +
   labs(x = "Longitud", y = "Latitud",
        title = expression("Registros de " * italic("C. similis"))) +
@@ -255,7 +255,7 @@ raster_ec_invasor <- rast("Final_Models/M_2_F_l_set_1_EC/Ctenosaura_similis_set_
 raster_e_invasor <- rast("Final_Models/M_2_F_l_set_1_E/Ctenosaura_similis_set_1_avg.asc")
 raster_ne_invasor <- rast("Final_Models/M_2_F_l_set_1_NE/Ctenosaura_similis_set_1_avg.asc")
 
-occs_ind_spatvector <- vect(occs_ind, geom = c("lon", "lat"), crs = "EPSG:4326")
+occs_ind_spatvector <- vect(occs_inv, geom = c("lon", "lat"), crs = "EPSG:4326")
 
 # graficamos
 par(mfrow = c(1, 3))
@@ -278,7 +278,6 @@ Extrapolación con clamping
 
 No extrapolación o truncación
 ![](/assets/images/plot_ne_pt.png)
-
 
 ## Podemos evaluar el modelo en la zona de transferencia
 ``` r
@@ -315,6 +314,7 @@ ggplot() + geom_boxplot(data = eval, aes(x = tipo_ext, y = auc_ratio))
 ![](/assets/images/plot_7_pt.png)
 
 # ANALISIS DE EXTRAPOLACIÓN
+![](/assets/images/mop_sch.jpg)
 ## CORRER EL MOP
 ``` r
 # cargamos las variables
@@ -331,6 +331,7 @@ mop_res <- mop(M_stack = mvars_stack, G_stack = gvars_stack, percent = 10,
 plot(mop_res)
 ```
 ![](/assets/images/plot_8_pt.png)
+
 
 
 
