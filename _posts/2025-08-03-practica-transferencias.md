@@ -314,7 +314,16 @@ ggplot() + geom_boxplot(data = eval, aes(x = tipo_ext, y = auc_ratio))
 ![](/assets/images/plot_7_pt.png)
 
 # ANALISIS DE EXTRAPOLACIÓN
+
+## ANALISIS MOP (Mobility oriented parity)
+El MOP es una métrica que evalúa cuán similares son las condiciones 
+ambientales de una zona de proyección (G), respecto a las condiciones 
+de la zona de calibración (M). Nos permite identificar zonas de 
+"extrapolación estricta".
+![](/assets/images/moppaper.png)
+
 ![](/assets/images/mop_sch.jpg)
+
 ## CORRER EL MOP
 ``` r
 # cargamos las variables
@@ -331,6 +340,7 @@ mop_res <- mop(M_stack = mvars_stack, G_stack = gvars_stack, percent = 10,
 plot(mop_res)
 ```
 ![](/assets/images/plot_8_pt.png)
+
 
 
 
