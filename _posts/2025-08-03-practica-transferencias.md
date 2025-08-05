@@ -29,7 +29,7 @@ Nicaragua, Guatemala, El Salvador, Honduras, Belize, Costa Rica, Panama,
 pero introducida en Florida (Uetz *et al*., 2025).
 
 # Descargar archivos
-Descargamos la carpeta del proyecto [aqui](https://drive.google.com/file/d/1ZnCBSIawKvZcP0mlV6tZPo61iwSz3VWh/view?usp=sharing)
+Descargamos la carpeta del proyecto [aqui](https://drive.google.com/drive/folders/1l0OSM2PVXy1Emo6VKkFqYjR3Sic2tr0y?usp=sharing)
 
 # PRIMERO CARGAREMOS LOS PAQUETES
 ``` r
@@ -319,5 +319,6 @@ mop_res <- mop(M_stack = mvars_stack, G_stack = gvars_stack, percent = 10,
 plot(mop_res)
 ```
 ![](/assets/images/plot_8_pt.png)
+
 
 
