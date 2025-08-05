@@ -181,7 +181,6 @@ cal_eval <- kuenm_ceval(path = out_dir, occ.joint = occ_joint, occ.tra = occ_tra
                         iterations = iterations, kept = kept, selection = selection)    
 ```
 
-
 ## ¿Cuantos mejores modelos obtuvimos?
 Podemos revisar el resultado de la evaluación
 ``` r
@@ -195,6 +194,7 @@ print(best_mod$Model)
 ![](/assets/images/plot_4_pt.png)
 
 ## construimos el modelo final (aquí transferimos a otras regiones o tiempos)
+![](/assets/images/tra_proc.jpg)
 ``` r
 # Nombre que tendrá el archivo batch (igual que en la calibración)
 batch_fin <- "final_models"
@@ -331,6 +331,7 @@ mop_res <- mop(M_stack = mvars_stack, G_stack = gvars_stack, percent = 10,
 plot(mop_res)
 ```
 ![](/assets/images/plot_8_pt.png)
+
 
 
 
