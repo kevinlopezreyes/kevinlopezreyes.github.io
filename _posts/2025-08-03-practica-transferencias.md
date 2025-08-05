@@ -281,7 +281,7 @@ No extrapolación o truncación
 
 ## Podemos evaluar el modelo en la zona de transferencia
 ``` r
-occs_inv <- read_csv("occ_ind.csv") %>%
+occs_inv <- read_csv("occ_inv.csv") %>%
             dplyr::select(longitude = lon, latitude = lat)
 
 raster_ec_invasor <- raster("Final_Models/M_2_F_l_set_1_EC/Ctenosaura_similis_set_1_avg.asc")
@@ -340,6 +340,7 @@ mop_res <- mop(M_stack = mvars_stack, G_stack = gvars_stack, percent = 10,
 plot(mop_res)
 ```
 ![](/assets/images/plot_8_pt.png)
+
 
 
 
