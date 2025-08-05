@@ -22,14 +22,14 @@ transferencia (Truncación, Extrapolación y Clamping). El objetivo es ver
 como cambian las métricas de evaluación y las predicciones en cada uno
 de los procedimientos. También exploraremos la métrica MOP (Mobility
 Oriented-Parity), la cual permite caracterizar los niveles de
-disimilitud entre un conjunto de condiciones de referencia y otro
+disimilitud entre un conjunto de condiciones de referencia y un
 conjunto de condiciones de interés. Para ello utilizaremos a la especie
 *Ctenosaura similis* como sistema de estudio. Es nativa de México,
 Nicaragua, Guatemala, El Salvador, Honduras, Belize, Costa Rica, Panama,
 pero introducida en Florida (Uetz *et al*., 2025).
 
 # Descargar archivos
-Descargar la carpeta del proyecto [aqui](https://drive.google.com/drive/folders/1rlSLD5f-CssSEgztnzTlzS7Z_KUywj8z?usp=drive_link)
+Descargamos la carpeta del proyecto [aqui](https://drive.google.com/file/d/1ZnCBSIawKvZcP0mlV6tZPo61iwSz3VWh/view?usp=sharing)
 
 # PRIMERO CARGAREMOS LOS PAQUETES
 ``` r
@@ -319,4 +319,5 @@ mop_res <- mop(M_stack = mvars_stack, G_stack = gvars_stack, percent = 10,
 plot(mop_res)
 ```
 ![](/assets/images/plot_8_pt.png)
+
 
