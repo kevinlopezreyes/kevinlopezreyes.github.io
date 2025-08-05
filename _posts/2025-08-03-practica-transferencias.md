@@ -54,6 +54,7 @@ library(kuenm) # Herramientas para modelado de nicho ecológico.
 library(ggplot2) # Creación de gráficos
 library(terra) # Manejo y análisis de datos espaciales raster y vectoriales.
 library(ntbox) # Herramientas para modelado de nicho ecológico.
+library(raster) # Manejo de datos espaciales
 ```
 # EXPLORAMOS LOS DATOS
 Primero exploremos/visualizemos los datos
@@ -340,6 +341,7 @@ mop_res <- mop(M_stack = mvars_stack, G_stack = gvars_stack, percent = 10,
 plot(mop_res)
 ```
 ![](/assets/images/plot_8_pt.png)
+
 
 
 
