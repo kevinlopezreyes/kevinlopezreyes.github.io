@@ -29,6 +29,9 @@ Nicaragua, Guatemala, El Salvador, Honduras, Belize, Costa Rica, Panama,
 pero introducida en Florida (Uetz *et al*., 2025). Y utilizaremos el 
 paquete *kuenm* (Cobos *et al*., 2019).
 
+![](/assets/images/iguana_pt.jpg)
+
+
 # ¿Qué es *kuenm*?
 ![](/assets/images/kuenm_t.png)
 Es un paquete de R desarrollado para el modelado detallado de nichos ecológicos utilizando maxent.
@@ -341,6 +344,7 @@ mop_res <- mop(M_stack = mvars_stack, G_stack = gvars_stack, percent = 10,
 plot(mop_res)
 ```
 ![](/assets/images/plot_8_pt.png)
+
 
 
 
