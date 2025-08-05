@@ -26,12 +26,21 @@ disimilitud entre un conjunto de condiciones de referencia y un
 conjunto de condiciones de interés. Para ello utilizaremos a la especie
 *Ctenosaura similis* como sistema de estudio. Es nativa de México,
 Nicaragua, Guatemala, El Salvador, Honduras, Belize, Costa Rica, Panama,
-pero introducida en Florida (Uetz *et al*., 2025).
+pero introducida en Florida (Uetz *et al*., 2025). Y utilizaremos el 
+paquete *kuenm* (Cobos *et al*., 2019).
+
+# ¿Qué es *kuenm*?
+![](/assets/images/kuenm_t.png)
+Es un paquete de R desarrollado para el modelado detallado de nichos ecológicos utilizando maxent.
+Permite la calibración, evaluación, y construcción final de modelos. Así como analisis de riesgo de
+extrapolación.
+
+
 
 # Descargar archivos
 Descargamos la carpeta del proyecto [aqui](https://drive.google.com/drive/folders/1l0OSM2PVXy1Emo6VKkFqYjR3Sic2tr0y?usp=sharing)
 
-# PRIMERO CARGAREMOS LOS PAQUETES
+# CARGAREMOS LOS PAQUETES
 ``` r
 library(tidyverse) # Manipulación, transformación de datos.
 library(sf) # Trabajar con datos vectoriales.
@@ -41,7 +50,6 @@ library(kuenm) # Herramientas para modelado de nicho ecológico.
 library(ggplot2) # Creación de gráficos
 library(terra) # Manejo y análisis de datos espaciales raster y vectoriales.
 library(ntbox) # Herramientas para modelado de nicho ecológico.
-
 ```
 # EXPLORAMOS LOS DATOS
 Primero exploremos/visualizemos los datos
@@ -319,6 +327,7 @@ mop_res <- mop(M_stack = mvars_stack, G_stack = gvars_stack, percent = 10,
 plot(mop_res)
 ```
 ![](/assets/images/plot_8_pt.png)
+
 
 
 
