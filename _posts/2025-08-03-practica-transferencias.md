@@ -30,7 +30,7 @@ pero introducida en Florida (Uetz *et al*., 2025). Y utilizaremos el
 paquete *kuenm* (Cobos *et al*., 2019).
 
 ![](/assets/images/iguana_pt.jpg)
-
+Foto: Peter Anthony Ricci
 
 # ¿Qué es *kuenm*?
 ![](/assets/images/kuenm_t.png)
@@ -199,6 +199,10 @@ print(best_mod$Model)
 
 ## construimos el modelo final (aquí transferimos a otras regiones o tiempos)
 ![](/assets/images/tra_proc.jpg)
+Modificado de: Owens *et al*. (2013). Constraints on interpretation of ecological 
+niche models by limited environmental ranges on calibration areas. *Ecological Modelling*.
+DOI: https://doi.org/10.1016/j.ecolmodel.2013.04.011
+
 ``` r
 # Nombre que tendrá el archivo batch (igual que en la calibración)
 batch_fin <- "final_models"
@@ -324,9 +328,10 @@ El MOP es una métrica que evalúa cuán similares son las condiciones
 ambientales de una zona de proyección (G), respecto a las condiciones 
 de la zona de calibración (M). Nos permite identificar zonas de 
 "extrapolación estricta".
-![](/assets/images/moppaper.png)
 
 ![](/assets/images/mop_sch.jpg)
+Cobos *et al*. (2024). Detailed multivariate comparisons of environments with mobility
+oriented parity. *Frontiers of Biologegraphy*.
 
 ## CORRER EL MOP
 ``` r
@@ -344,6 +349,7 @@ mop_res <- mop(M_stack = mvars_stack, G_stack = gvars_stack, percent = 10,
 plot(mop_res)
 ```
 ![](/assets/images/plot_8_pt.png)
+
 
 
 
