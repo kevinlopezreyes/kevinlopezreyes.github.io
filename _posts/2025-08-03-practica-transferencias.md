@@ -133,7 +133,7 @@ reg_mult <- seq(2, 4, 1)
 # Aqui los tipos de respuesta, pueden revisar los argumentos con la ayuda de la función utilizando help(kuenm) o ??kuenm
 f_clas <- c("l", "q")
 # Esta es la ruta donde esta nuestro archivo de Maxent
-maxent_path <- "C:/Users/tsunnyk/Documents/models"
+maxent_path <- "/Users/tsunnyk/Downloads/practica_transferencias"
 # Agregar argumentos adicionales
 # args <- "maximumbackground=10000 biasfile=D:\\YOURPATH\\bias_layer_01.asc"
 # Mantener en FALSE si desea correr en la terminal. Si se desea correr el analisis dentro de la consola de R cambiar a TRUE (consume más memoria RAM)
@@ -340,6 +340,7 @@ mop_res <- mop(M_stack = mvars_stack, G_stack = gvars_stack, percent = 10,
 plot(mop_res)
 ```
 ![](/assets/images/plot_8_pt.png)
+
 
 
 
