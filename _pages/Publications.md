@@ -9,7 +9,7 @@ share: false
 [Google Scholar profile](https://scholar.google.com/citations?user=5S9qAwkAAAAJ&hl=es)
 
 # 2025
-+ **López-Reyes, K**., Kass, J., Yañez-Arenas, C. & Villalobos, F. (2025). Historical biogeography and climatic niche dynamics in spiny lizards of the genus *Sceloporus* (Squamata: Phrynosomatidae). Biological Journal of the Linnean Society. [ACCEPTED]
++ **López-Reyes, K**., Kass, J., Yañez-Arenas, C. & Villalobos, F. (2025). Historical biogeography and climatic niche dynamics in spiny lizards of the genus *Sceloporus* (Squamata: Phrynosomatidae). Biological Journal of the Linnean Society. [LINK](https://academic.oup.com/biolinnean/article/146/3/blaf117/8316254)
 
 + Farji‐Brener, A. Abarca‐Méndez, A. Cubero‐Morales, L. **López‐Reyes, K**. Ramírez‐Mosquera, D. & Escalante, I. Neighbor Density and Post‐Contact Immobility Duration as Antipredator Behavior: Antlion Larvae Do Not Fit the Selfish Prey Hypothesis. Ethology. 131(2): e13527. 2025. [LINK](https://onlinelibrary.wiley.com/doi/10.1111/eth.13527)
  
