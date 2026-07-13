@@ -42,13 +42,6 @@ yandex_site_verification :
 naver_site_verification  :
 
 # Social Sharing
-twitter:
-  username               : "kevinlopezreyes"
-facebook:
-  username               :
-  app_id                 :
-  publisher              :
-og_image                 : # Open Graph/Twitter default site image
 # For specifying social profiles
 # - https://developers.google.com/structured-data/customize/social-profiles
 social:
@@ -72,9 +65,6 @@ author:
   email            :
   links:
 
-    - label: "X"
-      icon: "fab fa-fw fa-twitter"
-      url: "https://x.com/lopezreyeska"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/kevinlopezreyes"
