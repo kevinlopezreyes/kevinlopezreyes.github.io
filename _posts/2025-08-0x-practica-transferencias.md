@@ -2,7 +2,7 @@
 layout: single
 title: "Kuenm y transferencias"
 author: "Kevin López-Reyes"
-date: 2025-08-03
+date: 2026-07-25
 categories: [practice]
 permalink: /resources/practica-transferencias/ # Esta será la URL de tu post
 toc: true # Activa la Tabla de Contenido
