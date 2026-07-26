@@ -7,4 +7,4 @@ categories: [practice]
 resource_url: /assets/presentations/transferencias/
 ---
 
-🌎🦎 [Abrir presentación de KUENM y transferencias](/assets/presentations/transferencias/)
+🌎🦎 [transferencias](/assets/presentations/transferencias/)
