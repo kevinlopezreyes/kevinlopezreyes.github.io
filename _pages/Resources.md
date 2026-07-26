@@ -17,7 +17,6 @@ Select a practice to view its content.
       <a href="{{ post.resource_url | default: post.url | relative_url }}">
         {{ post.title }}
       </a>
-      - {{ post.date | date: "%Y-%m-%d" }}
     </li>
   {% endfor %}
 </ul>
