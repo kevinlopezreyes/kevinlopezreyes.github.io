@@ -198,9 +198,9 @@ author_profile: false
 
 <div class="album-grid">
 
-  <button class="album-card" type="button" data-album="japon">
+  <button class="album-card" type="button" data-album="Japan">
     <img
-      src="{{ '/assets/images/photos/japon/japon-01.jpg' | relative_url }}"
+      src="{{ '/assets/images/photos/Japan/Japan-01.jpg' | relative_url }}"
       alt="Abrir álbum de Japón"
       loading="lazy">
     <span class="album-overlay">
@@ -266,19 +266,19 @@ author_profile: false
 
 <script>
 const albums = {
-  japon: {
+  Japan: {
     title: "Japón",
     photos: [
       {
-        src: "{{ '/assets/images/photos/japon/japon-01.jpg' | relative_url }}",
+        src: "{{ '/assets/images/photos/Japan/Japan-01.jpg' | relative_url }}",
         caption: "Monte Fuji, Japón."
       },
       {
-        src: "{{ '/assets/images/photos/japon/japon-02.jpg' | relative_url }}",
+        src: "{{ '/assets/images/photos/Japan/Japan-02.jpg' | relative_url }}",
         caption: "Templo tradicional en Japón."
       },
       {
-        src: "{{ '/assets/images/photos/japon/japon-03.jpg' | relative_url }}",
+        src: "{{ '/assets/images/photos/Japan/Japan-03.jpg' | relative_url }}",
         caption: "Calles de Tokio durante la noche."
       }
     ]
