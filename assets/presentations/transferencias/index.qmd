@@ -1,6 +1,6 @@
 ---
 title: "Transferencias en modelos de nicho ecológico"
-subtitle: "De la intuición a ENMeval 2.0: cuándo proyectar, cuándo dudar y cómo reportar"
+subtitle: ""
 author: "Kevin López-Reyes"
 lang: es
 format:
