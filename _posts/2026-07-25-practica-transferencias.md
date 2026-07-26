@@ -4,7 +4,7 @@ title: "Transferencias"
 author: "Kevin López-Reyes"
 date: 2025-08-03
 categories: [practice]
-permalink: /resources/practica_transferencias_2026/
+permalink: /resources/practica-transferencias/
 ---
 
 🌎🦎 [Abrir presentación de KUENM y transferencias](/assets/presentations/transferencias/)
