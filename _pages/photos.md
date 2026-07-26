@@ -201,10 +201,10 @@ author_profile: false
   <button class="album-card" type="button" data-album="Japan">
     <img
       src="{{ '/assets/images/photos/Japan/Japan-01.jpg' | relative_url }}"
-      alt="Abrir álbum de Japón"
+      alt="Abrir álbum de Japan"
       loading="lazy">
     <span class="album-overlay">
-      <strong>Japón</strong>
+      <strong>Japan</strong>
       <span>Ver fotografías →</span>
     </span>
   </button>
@@ -267,15 +267,15 @@ author_profile: false
 <script>
 const albums = {
   Japan: {
-    title: "Japón",
+    title: "Japan",
     photos: [
       {
         src: "{{ '/assets/images/photos/Japan/Japan-01.jpg' | relative_url }}",
-        caption: "Monte Fuji, Japón."
+        caption: "Monte Fuji, Japan."
       },
       {
         src: "{{ '/assets/images/photos/Japan/Japan-02.jpg' | relative_url }}",
-        caption: "Templo tradicional en Japón."
+        caption: "Templo tradicional en Japan."
       },
       {
         src: "{{ '/assets/images/photos/Japan/Japan-03.jpg' | relative_url }}",
