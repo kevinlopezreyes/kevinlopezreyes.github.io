@@ -35,6 +35,10 @@ En MNE, **transferir** un modelo implica proyectar las relaciones especie–ambi
 Basado en [Qiao et al. (2018)](https://nsojournals.onlinelibrary.wiley.com/doi/abs/10.1111/ecog.03986)
 :::
 
+
+[![](https://opinionessobreciencia.wordpress.com/wp-content/uploads/2016/04/extrapolacion-interpolacion.png){height="400px" fig-align="center"}](https://opinionessobreciencia.wordpress.com/wp-content/uploads/2016/04/extrapolacion-interpolacion.png)
+
+
 ## Tipos de transferencia
 
 ### Las transferencias pueden ocurrir a traves de:
@@ -53,12 +57,42 @@ Basado en [Qiao et al. (2018)](https://nsojournals.onlinelibrary.wiley.com/doi/a
      style="width:48%;"> <img src="https://www.meteorologiaenred.com/wp-content/uploads/2019/11/Ecosistema-del-plioceno.jpg.webp" alt="Reconstrucción de un ecosistema del Plioceno" style="width:100%; height:310px; object-fit:contain; display:block;"/> </a>
 :::
 
+
+## ¿Por qué quisiera transferir un nicho?
+### Invasiones biológicas
+### Sapo de caña (*Rhinella marina*)
+
+El modelo se calibró con las condiciones climáticas del rango nativo de la especie en América y se transfirió a Australia, donde fue introducida.
+
+- **Origen:** Centroamérica y Sudamérica.
+- **Destino:** Australia.
+- **Pregunta:** ¿Qué regiones de Australia presentan condiciones climáticas adecuadas?
+
+
+[![](https://github.com/kevinlopezreyes/kevinlopezreyes.github.io/blob/master/assets/images/transferencia/Captura%20de%20pantalla%202026-08-04%20001650.jpg?raw=true){height="400px" fig-align="center"}](https://www.pnas.org/doi/full/10.1073/pnas.1405766111)
+
+## ¿Por qué quisiera transferir un nicho?
+### Proyecciones a futuro
+
+### Panda gigante (*Ailuropoda melanoleuca*)
+
+Un modelo **Maxent** calibrado con registros y condiciones ambientales actuales fue transferido a escenarios de 2050 y 2070.
+
+- **Origen:** condiciones ambientales actuales en Sichuan, China.
+- **Destino:** condiciones proyectadas para 2050 y 2070.
+- **Pregunta:** ¿Cómo cambiará la distribución del el panda gigante bajo distintos escenarios climáticos?
+
+[![](https://cdn.ncbi.nlm.nih.gov/pmc/blobs/bd2d/9465186/3ae328a99dad/ECE3-12-e9298-g004.jpg){height="510px" fig-align="center"}](https://doi.org/10.1002/ece3.9298)
+
+::: source
+[Liu et al. (2022)](https://doi.org/10.1002/ece3.9298). Bajo RCP8.5, el modelo proyectó una pérdida neta de hábitat adecuado de 25% para 2050 y 38% para 2070.
+:::
+
 ## Objetivo de la práctica
 
-Que los participantes desarrollen un **modelo de nicho ecológico completo con `kuenm2`**, desde la limpieza y preparación de los datos hasta la calibración, selección, exploración y transferencia del modelo.
+Que desarrollen un **modelo de nicho ecológico completo con `kuenm2`**, desde la limpieza y preparación de los datos hasta la calibración, selección, exploración y transferencia del modelo.
 
 Durante las transferencias compararemos:
-
 -   **extrapolación libre**;
 -   **clamping**;
 -   **truncamiento o no extrapolación**;
@@ -145,7 +179,7 @@ El código de `kuenm2` se distribuye bajo licencia [GPL ≥ 3](https://github.co
 ```{r}
 #| eval: false
 
-install.packages("kuenm2")
+# install.packages("kuenm2")
 
 ```
 
@@ -153,16 +187,16 @@ install.packages("kuenm2")
 
 [![](https://inaturalist-open-data.s3.amazonaws.com/photos/693781403/original.jpg){height="380px" fig-align="center"}](https://www.inaturalist.org/observations/379337549)
 
-Lagartija espinosa azul yucateca (Sceloporus serrifer). Una especie de lagartija de la Peninsula de Yucatan!
+Lagartija espinosa azul yucateca (Sceloporus serrifer). Una especie de lagartija de la Peninsula de Yucatan.
 
 -   Calibrar un modelo en su área nativa
--   Transferir el modelo al 2050
+-   Transferir el modelo al periodo 2040-2060
 -   Revisar los resultados
 -   Analizar el riesgo de extrapolación
 
 ## Insumos
 
-### Descargar los datos en el siguiente enlace: [DESCARGAR]()
+### Descargar los datos en el siguiente enlace: [DESCARGAR](https://drive.google.com/file/d/1VWNTa52D9x-Nbb-d397cZiESmyvOa70F/view?usp=sharing)
 
 ### Instalar kuenm2
 
@@ -187,10 +221,9 @@ library(magrittr)
 
 ## 1. Limpieza básica de los datos
 
-Antes de estimar un modelo debemos comprobar que los registros de presencia sean consistentes con la especie y con las variables ambientales.
+Antes de estimar un modelo debemos limpiar nuestros datos!
 
 En esta sección:
-
 -   inspeccionaremos los registros originales;
 -   identificaremos errores;
 -   aplicaremos distintos criterios de limpieza;
@@ -253,7 +286,7 @@ Construimos un buffer de 200 km alrededor de los registros y recortamos las vari
 registros <- vect(occ, geom = c("longitude", "latitude"),
                   crs = "EPSG:4326")
 
-# Proyectar a coordenadas métricas
+# Proyectar a coordenadas en metros
 registros_utm <- project(registros, "EPSG:32616")
 
 # Crear un buffer de 200 km
@@ -391,10 +424,9 @@ leaflet(
 ## 2.1. Configuración
 
 Utilizaremos:
-
 -   algoritmo: **Maxnet**;
 -   cuatro particiones;
--   5,000 puntos de fondo;
+-   1,000 puntos de fondo;
 -   dos tipos de respuesta;
 -   tres valores de regularización.
 
@@ -440,7 +472,7 @@ El resumen permite comprobar:
 Los seis modelos candidatos serán evaluados utilizando cuatro criterios:
 
 1. ausencia de curvas cóncavas;
-2. tasa de omisión máxima de 10%;
+2. tasa de omisión 10%;
 3. significancia mediante ROC parcial;
 4. menor complejidad mediante AICc.
 
@@ -473,8 +505,6 @@ calibracion$selected_models
 ```
 
 Los modelos seleccionados:
-
-- tienen respuestas ambientalmente coherentes;
 - omiten menos del 10% de las presencias de evaluación;
 - predicen mejor que un modelo aleatorio;
 - presentan un delta AICc menor que 2.
@@ -486,8 +516,6 @@ Los modelos seleccionados:
 ## 4. Ajustar los modelos seleccionados
 
 `fit_selected()` vuelve a ajustar las configuraciones seleccionadas utilizando:
-
-- todos los datos disponibles;
 - cuatro réplicas correspondientes a las particiones;
 - salida de idoneidad `cloglog`.
 
@@ -551,7 +579,7 @@ importancia <- variable_importance(
 ```
 
 ```{r}
-#| echo: false
+#| echo: true
 #| fig-width: 10
 #| fig-height: 6
 #| out-width: 80%
@@ -562,17 +590,13 @@ plot_importance(
   main = "Importancia de las variables")
 ```
 
-Una contribución mayor indica que retirar esa variable produce una pérdida más grande en el ajuste del modelo.
-
 ::: source
 [Guía de ajuste y exploración de modelos de `kuenm2`](https://marlonecobos.github.io/kuenm2/articles/fit_explore_models.html)
 :::
 
+## 5. Transferencia a un escenario futuro
 
-
-# 5. Transferencia a un escenario futuro
-
-## Cargar las variables climáticas futuras
+### Cargar las variables climáticas futuras
 
 Utilizaremos las condiciones proyectadas por **MIROC6** para el escenario **SSP5-8.5** durante **2041–2060**.
 
@@ -595,7 +619,6 @@ Las variables futuras se recortan utilizando la misma área empleada para calibr
 ```{r}
 #| echo: true
 
-
 G_var <- crop(G_future, M_buffer)
 
 G_var <- mask(G_var, M_buffer)
@@ -609,7 +632,7 @@ plot(G_var)
 
 ## Verificar las variables
 
-Los predictores presentes y futuros deben tener los mismos nombres y geometría.
+Los predictores presentes y futuros deben tener los mismos nombres
 
 ```{r}
 #| echo: true
@@ -617,7 +640,6 @@ Los predictores presentes y futuros deben tener los mismos nombres y geometría.
 names(M_var)
 names(G_var)
 
-compareGeom(M_var, G_var)
 ```
 
 ## Proyección en las condiciones actuales
@@ -629,10 +651,11 @@ prediccion_actual <- predict_selected(models = modelos_finales,
   new_variables = M_var,
   type = "cloglog",
   consensus = "mean",
-  extrapolation_type = "E",
+  extrapolation_type = "NE",
   progress_bar = FALSE)
 
 mapa_actual <- prediccion_actual$General_consensus$mean
+plot(mapa_actual)
 ```
 
 ## Idoneidad ambiental actual
@@ -649,6 +672,24 @@ plot(mapa_actual, col = hcl.colors(100, "YlOrRd", rev = TRUE), range = c(0, 1),
 points(occ_clean_cell$longitude, occ_clean_cell$latitude, pch = 20, cex = 0.8)
 
 ```
+
+## Procedimientos de transferencia
+
+Cuando las condiciones de la región de transferencia exceden los rangos ambientales de calibración, podemos utilizar tres procedimientos:
+
+- Extrapolación libre — E: 
+Las respuestas estimadas continúan fuera del rango de calibración.
+
+- Extrapolación con clamping — EC:
+Los valores ambientales que exceden el rango se sustituyen por el límite mínimo o máximo conocido.
+
+-No extrapolación o truncamiento — NE:
+Las celdas con al menos una variable fuera del rango de calibración reciben idoneidad cero.
+
+Dentro de los rangos de calibración, los tres procedimientos producen la misma predicción.
+
+
+[![](https://github.com/kevinlopezreyes/kevinlopezreyes.github.io/blob/master/assets/images/tra_proc.jpg?raw=true){height="380px" fig-align="center"}](https://www.sciencedirect.com/science/article/pii/S0304380013002159)
 
 ## Transferencia al futuro
 
@@ -768,92 +809,33 @@ writeRaster(mapas, "Resultados/predicciones.tif", overwrite = TRUE)
 writeRaster(cambios, "Resultados/cambios.tif", overwrite = TRUE)
 ```
 
+## 6. Riesgo de extrapolación
 
+Al transferir el modelo hacia condiciones futuras pueden aparecer ambientes que no estuvieron representados durante la calibración.
 
-# 6. Incertidumbre y riesgo de extrapolación
+El análisis **MOP** permite identificar:
 
-## ¿Qué evaluaremos?
-
-En esta práctica evaluaremos dos fuentes de incertidumbre:
-
-- la **variabilidad entre réplicas** del modelo;
-- el **riesgo de extrapolación** mediante el análisis MOP.
-
-Como utilizamos un solo modelo climático, no evaluaremos variabilidad entre GCM.
-
-## Variabilidad entre réplicas
-
-La desviación estándar muestra dónde las réplicas producen predicciones diferentes.
-
-```{r}
-#| echo: true
-
-modelo_id <- grep(
-  "^Model_",
-  names(prediccion_actual),
-  value = TRUE
-)[1]
-
-variabilidad_actual <- app(
-  prediccion_actual[[modelo_id]]$Replicates,
-  sd,
-  na.rm = TRUE
-)
-
-variabilidad_futura <- app(
-  prediccion_EC[[modelo_id]]$Replicates,
-  sd,
-  na.rm = TRUE
-)
-```
-
-## Variabilidad geográfica del modelo
-
-```{r}
-#| echo: false
-#| fig-width: 12
-#| fig-height: 5.5
-#| fig-align: center
-
-variabilidad <- c(
-  variabilidad_actual,
-  variabilidad_futura
-)
-
-names(variabilidad) <- c(
-  "Presente",
-  "Futuro"
-)
-
-plot(
-  variabilidad,
-  col = hcl.colors(100, "Inferno"),
-  range = c(0, max(global(
-    variabilidad,
-    "max",
-    na.rm = TRUE
-  )[, 1])),
-  nc = 2
-)
-```
-
-Los valores altos indican regiones donde las réplicas del modelo producen predicciones menos consistentes.
-
-## Riesgo de extrapolación
-
-El análisis **MOP** compara las condiciones utilizadas para calibrar el modelo con las condiciones del escenario futuro.
-
-Permite identificar:
-
-- condiciones dentro de los rangos de calibración;
-- variables fuera de esos rangos;
-- grado de disimilitud ambiental.
+- celdas con condiciones ambientales fuera de los rangos de calibración;
+- número de variables fuera de esos rangos;
+- disimilitud entre las condiciones futuras y las condiciones de calibración.
 
 ::: source
-Basado en [Owens et al. (2013)](https://doi.org/10.1016/j.ecolmodel.2013.04.011) y la [documentación de kuenm2](https://marlonecobos.github.io/kuenm2/).
+[Owens et al. (2013)](https://doi.org/10.1016/j.ecolmodel.2013.04.011) y [documentación de kuenm2](https://marlonecobos.github.io/kuenm2/).
 :::
 
-## Análisis MOP
+## ¿Qué identifica el MOP?
+
+MOP compara las condiciones ambientales de **calibración** con las condiciones del escenario de **transferencia**.
+
+Las condiciones de transferencia que quedan fuera de los rangos observados durante la calibración representan **extrapolación estricta**.
+
+[![](https://biogeography.pensoft.net/showimg/oo_1141301.jpg){height="500px" fig-align="center"}](https://biogeography.pensoft.net/article/132916/)
+
+::: source
+Información de [Owens et al. (2013)](https://doi.org/10.1016/j.ecolmodel.2013.04.011), disponible también en la [documentación de smop](https://luismurao.github.io/smop/).
+:::
+
+## Calcular el MOP
 
 ```{r}
 #| echo: true
@@ -874,7 +856,7 @@ MOP_futuro <- single_mop(
 )
 ```
 
-## Resultados del MOP
+## Condiciones no análogas
 
 ```{r}
 #| echo: false
@@ -887,33 +869,32 @@ par(mfrow = c(1, 3))
 plot(
   MOP_futuro$mop_basic,
   main = "Condiciones no análogas",
-  col = c("grey90", "#D55E00")
+  col = c("grey90", "#D55E00"),
+  axes = FALSE
 )
 
 plot(
   MOP_futuro$mop_simple,
   main = "Variables fuera del rango",
-  col = hcl.colors(5, "YlOrRd")
+  col = hcl.colors(8, "YlOrRd"),
+  axes = FALSE
 )
 
 plot(
   MOP_futuro$mop_distances,
   main = "Disimilitud ambiental",
-  col = hcl.colors(100, "Inferno")
+  col = hcl.colors(100, "Inferno"),
+  axes = FALSE
 )
 
 par(mfrow = c(1, 1))
 ```
 
-## ¿Cómo interpretamos los resultados?
-
 - **MOP básico:** identifica celdas con al menos una variable fuera del rango de calibración.
-- **MOP simple:** indica cuántas variables están fuera de ese rango.
-- **Distancia ambiental:** valores altos indican condiciones más diferentes a las utilizadas para calibrar.
+- **MOP simple:** indica cuántas variables están fuera de sus rangos.
+- **Distancia ambiental:** indica qué tan diferentes son las condiciones futuras.
 
-MOP no determina si la predicción es incorrecta. Indica dónde su interpretación requiere mayor precaución.
-
-## Condiciones por encima del rango
+## Valores superiores al rango de calibración
 
 ```{r}
 #| echo: false
@@ -923,18 +904,16 @@ MOP no determina si la predicción es incorrecta. Indica dónde su interpretaci�
 
 plot(
   MOP_futuro$mop_detailed$towards_high_end,
-  main = paste(
-    names(G_var),
-    "por encima"
-  ),
+  main = paste(names(G_var), "por encima"),
   col = c("grey90", "#D55E00"),
-  nc = 2
+  nc = 2,
+  axes = FALSE
 )
 ```
 
-Estas regiones presentan valores futuros superiores al máximo utilizado para calibrar el modelo.
+Las celdas resaltadas presentan valores futuros superiores al máximo utilizado durante la calibración.
 
-## Condiciones por debajo del rango
+## Valores inferiores al rango de calibración
 
 ```{r}
 #| echo: false
@@ -944,74 +923,23 @@ Estas regiones presentan valores futuros superiores al máximo utilizado para ca
 
 plot(
   MOP_futuro$mop_detailed$towards_low_end,
-  main = paste(
-    names(G_var),
-    "por debajo"
-  ),
+  main = paste(names(G_var), "por debajo"),
   col = c("grey90", "#0072B2"),
-  nc = 2
+  nc = 2,
+  axes = FALSE
 )
 ```
 
-Estas regiones presentan valores futuros inferiores al mínimo utilizado para calibrar el modelo.
+Las celdas resaltadas presentan valores futuros inferiores al mínimo utilizado durante la calibración.
 
-## MOP y procedimientos de transferencia
+## Interpretación del MOP
 
-El procedimiento de transferencia determina qué ocurre en las regiones identificadas por MOP:
+MOP identifica las regiones donde la transferencia ocurre bajo condiciones ambientales no representadas durante la calibración.
+
+En esas regiones:
 
 - **E:** el modelo continúa sus respuestas fuera del rango;
-- **EC:** las respuestas se mantienen en el límite conocido;
-- **NE:** las condiciones fuera del rango reciben idoneidad cero.
+- **EC:** los valores se limitan al mínimo o máximo conocido;
+- **NE:** las celdas fuera del rango reciben idoneidad cero.
 
-Por eso, el mapa MOP debe interpretarse junto con las curvas de respuesta y las predicciones obtenidas mediante cada procedimiento.
-
-## Guardar los resultados finales
-
-```{r}
-#| echo: true
-
-writeRaster(
-  variabilidad,
-  "Resultados/variabilidad_replicas.tif",
-  overwrite = TRUE
-)
-
-writeRaster(
-  MOP_futuro$mop_basic,
-  "Resultados/MOP_basico.tif",
-  overwrite = TRUE
-)
-
-writeRaster(
-  MOP_futuro$mop_simple,
-  "Resultados/MOP_variables_fuera_rango.tif",
-  overwrite = TRUE
-)
-
-writeRaster(
-  MOP_futuro$mop_distances,
-  "Resultados/MOP_disimilitud.tif",
-  overwrite = TRUE
-)
-
-saveRDS(
-  MOP_futuro,
-  "Resultados/MOP_completo.rds"
-)
-```
-
-## Conclusiones
-
-- La transferencia depende del modelo estimado y de las condiciones del nuevo escenario.
-- Los procedimientos **E**, **EC** y **NE** producen resultados diferentes únicamente donde existe extrapolación.
-- La variabilidad entre réplicas muestra la estabilidad de las predicciones.
-- MOP permite localizar condiciones ambientales no representadas durante la calibración.
-- Las transferencias deben interpretarse considerando conjuntamente las predicciones, las curvas de respuesta y el riesgo de extrapolación.
-
-
-
-
-
-
-
-
+MOP no demuestra que la predicción sea incorrecta. Indica dónde existe **riesgo de extrapolación** y la predicción debe interpretarse con mayor precaución.
