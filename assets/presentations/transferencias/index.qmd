@@ -1,0 +1,341 @@
+---
+title: "Transferencias de modelos de nicho ecológico"
+subtitle: "KUENM, MOP, procedimientos de transferencia"
+author: "Kevin López-Reyes"
+institute: "Universidad Nacional Autonoma de México"
+lang: es
+format:
+  revealjs:
+    theme: theme.scss
+    width: 1600
+    height: 900
+    margin: 0.05
+    slide-number: c/t
+    controls: true
+    progress: true
+    transition: fade
+    center: false
+    embed-resources: true
+execute:
+  enabled: true
+  warning: false
+  message: false
+---
+
+## ¿Qué es una transferencia?
+
+En MNE, **transferir** un modelo implica proyectar las relaciones especie–ambiente estimadas en una region y periodo especifico hacia nuevos escenarios.
+
+### Implica dos procesos en el espacio ambiental:
+
+-   **Interpolación**: transferencias hacia condiciones ambientales **dentro** de las utilizadas para calibrar el modelo.
+-   **Extrapolación**: transferencias hacia condiciones ambientales **fuera** de las utilizadas para calibrar el modelo.
+
+::: source
+Basado en [Qiao et al. (2018)](https://nsojournals.onlinelibrary.wiley.com/doi/abs/10.1111/ecog.03986)
+:::
+
+## Tipos de transferencia
+
+### Las transferencias pueden ocurrir a traves de:
+
+-   el **espacio**: una región geográfica distinta
+-   el **tiempo**: pasado o futuro;
+-   **ambos**: otra región en otro tiempo
+
+::: {style="display:flex; gap:1.2rem; align-items:center; justify-content:center; margin-top:0.7rem;"}
+<a href="https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/526B/production/_109499012_pezleon.png.webp"
+     target="_blank"
+     style="width:48%;"> <img src="https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/526B/production/_109499012_pezleon.png.webp" alt="Pez león" style="width:100%; height:310px; object-fit:contain; display:block;"/> </a>
+
+<a href="https://www.meteorologiaenred.com/wp-content/uploads/2019/11/Ecosistema-del-plioceno.jpg.webp"
+     target="_blank"
+     style="width:48%;"> <img src="https://www.meteorologiaenred.com/wp-content/uploads/2019/11/Ecosistema-del-plioceno.jpg.webp" alt="Reconstrucción de un ecosistema del Plioceno" style="width:100%; height:310px; object-fit:contain; display:block;"/> </a>
+:::
+
+## Objetivo de la practica
+
+Que aprendan a **calibrar** y **transferir** un modelo de nicho ecologico utilizando el paquete de R **Kuenm**, teniendo en consideración los **procedimientos de transferencia** (Campling, Truncation y Extrapolation), y los análisis de **riesgo de extrapolación** (MOP).
+
+## Qué es Kuenm
+
+Es un paquete de R desarrollado para el modelado detallado de nichos ecológicos utilizando maxent. Permite la calibración, evaluación, y construcción final de modelos. Así como analisis de riesgo de extrapolación.
+
+[![](https://github.com/kevinlopezreyes/kevinlopezreyes.github.io/blob/master/assets/images/kuenm_t.png?raw=true){width="70%" fig-align="center" style="margin-top: 40px;"}](https://peerj.com/articles/6281/)
+
+## Flujo de trabajo
+
+[![](https://github.com/kevinlopezreyes/kevinlopezreyes.github.io/blob/master/assets/images/kuenm_wf.jpg?raw=true){width="70%" fig-align="center"}](https://peerj.com/articles/6281/)
+
+## Sistema de estudio
+
+[![](https://www.ecdc.europa.eu/sites/default/files/styles/col_lg_12_x2/public/images/Aedes-Albopictus_B.jpg.webp?itok=35KVHCyh){height="380px" fig-align="center"}](https://commons.wikimedia.org/wiki/File:Aedes_Albopictus.jpg)
+
+Mosquito tigre (*Aedes albopictus*). Un especie que es vector de los virus del dengue, chikungunya y zika
+
+- Calibrar un modelo en su área nativa
+- Transferir el modelo a México, presente y en 2050
+- Revisar los resultados
+- Analizar el riesgo de extrapolación
+
+## Insumos
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+### Registros de presencia
+
+[Kraemer *et al.* (2015)](https://www.nature.com/articles/sdata201535)
+
+[![](https://github.com/kevinlopezreyes/kevinlopezreyes.github.io/blob/master/assets/images/transferencia/image.png?raw=true){height="300px"}](https://www.nature.com/articles/sdata201535)
+
+:::
+
+::: {.column width="50%"}
+
+### Variables ambientales
+
+[CHELSA](https://www.chelsa-climate.org/)
+
+[![](https://framerusercontent.com/images/bMtBywJpP4C6MtB5J7JEZEhuPGs.png){height="300px"}](https://www.chelsa-climate.org/)
+
+:::
+
+:::
+
+### Descargar los datos
+
+Carpeta con los registros de presencia y las variables ambientales: [DESCARGAR]()
+
+## Instalamos y cargamos todos los paquetes necesarios
+### Estoy utilizando R 4.4.1
+### Necesitaran RTools para instalar Kuenm (yo tengo la versión 4.4)
+```{r}
+#| echo: true
+# Paquetes necesarios
+library(terra)
+library(kuenm2)
+library(sf)
+library(leaflet)
+library(ggplot2)
+
+```
+
+## Cargar registros de presencia
+```{r}
+#| echo: true
+
+occ_joint <- read.csv("occ_joint.csv")
+occ_train <- read.csv("occ_train.csv")
+occ_test  <- read.csv("occ_test.csv")
+occ_inv   <- read.csv("occ_inv.csv")
+
+head(occ_joint)
+```
+
+## Registros nativos e invasores
+
+::: {style="width:90%; margin:0 auto;"}
+
+```{r}
+#| echo: false
+
+leaflet(width = "100%", height = "650px") %>%
+  addTiles() %>%
+  addCircleMarkers(
+    data = occ_joint,
+    lng = ~longitude,
+    lat = ~latitude,
+    color = "blue",
+    radius = 3,
+    stroke = FALSE
+  ) %>%
+  addCircleMarkers(
+    data = occ_inv,
+    lng = ~longitude,
+    lat = ~latitude,
+    color = "red",
+    radius = 4,
+    stroke = FALSE
+  ) %>%
+  addLegend(
+    colors = c("blue", "red"),
+    labels = c("Rango nativo", "México")
+  ) %>%
+  fitBounds(-120, -15, 155, 60)
+```
+
+:::
+
+## Partición de los registros nativos
+
+::: {style="width:90%; margin:0 auto;"}
+
+```{r}
+#| echo: false
+
+leaflet(width = "100%", height = "650px") %>%
+  addTiles() %>%
+  addCircleMarkers(
+    data = occ_train,
+    lng = ~longitude,
+    lat = ~latitude,
+    color = "blue",
+    radius = 3,
+    stroke = FALSE
+  ) %>%
+  addCircleMarkers(
+    data = occ_test,
+    lng = ~longitude,
+    lat = ~latitude,
+    color = "orange",
+    radius = 3,
+    stroke = FALSE
+  ) %>%
+  addLegend(
+    colors = c("blue", "orange"),
+    labels = c("Entrenamiento", "Evaluación")
+  ) %>%
+  fitBounds(60, -15, 150, 55)
+```
+
+:::
+
+## Variables del rango nativo
+
+```{r}
+#| echo: true
+
+M_var <- rast(
+  list.files(
+    "M_var/set_1",
+    pattern = "^bio_.*\\.tif$",
+    full.names = TRUE
+  )
+)
+```
+
+```{r}
+#| echo: false
+terraOptions(progress = 0)
+M_map <- aggregate(M_var[[1]], fact = 5)
+
+pal <- colorNumeric(
+  "viridis",
+  domain = c(minmax(M_map)),
+  na.color = "transparent"
+)
+
+leaflet(width = "100%", height = "600px") %>%
+  addTiles() %>%
+  addRasterImage(
+    M_map,
+    colors = pal,
+    opacity = 0.8,
+    maxBytes = 20 * 1024^2
+  ) %>%
+  addLegend(
+    pal = pal,
+    values = c(minmax(M_map)),
+    title = "BIO1"
+  ) %>%
+  fitBounds(
+    xmin(M_map),
+    ymin(M_map),
+    xmax(M_map),
+    ymax(M_map)
+  )
+```
+
+## México en el presente (zona de invasión)
+
+```{r}
+#| echo: true
+
+G_present <- rast(
+  list.files(
+    "G_var/set_1",
+    pattern = "^bio_.*\\.tif$",
+    full.names = TRUE
+  )
+)
+```
+
+```{r}
+#| echo: false
+terraOptions(progress = 0)
+G_present_map <- aggregate(G_present[[1]], fact = 3)
+
+pal <- colorNumeric(
+  "viridis",
+  domain = c(minmax(G_present_map)),
+  na.color = "transparent"
+)
+
+leaflet(width = "100%", height = "600px") %>%
+  addTiles() %>%
+  addRasterImage(
+    G_present_map,
+    colors = pal,
+    opacity = 0.8,
+    maxBytes = 20 * 1024^2
+  ) %>%
+  addLegend(
+    pal = pal,
+    values = c(minmax(G_present_map)),
+    title = "BIO1 presente"
+  ) %>%
+  fitBounds(
+    xmin(G_present_map),
+    ymin(G_present_map),
+    xmax(G_present_map),
+    ymax(G_present_map)
+  )
+```
+
+## México en el futuro (zona de invasión en el futuro)
+
+```{r}
+#| echo: true
+
+G_future <- rast(
+  list.files(
+    "G_var/set_2",
+    pattern = "^bio_.*\\.tif$",
+    full.names = TRUE
+  )
+)
+```
+
+```{r}
+#| echo: false
+
+G_future_map <- aggregate(G_future[[1]], fact = 3)
+
+pal <- colorNumeric(
+  "viridis",
+  domain = c(minmax(G_future_map)),
+  na.color = "transparent"
+)
+
+leaflet(width = "100%", height = "600px") %>%
+  addTiles() %>%
+  addRasterImage(
+    G_future_map,
+    colors = pal,
+    opacity = 0.8,
+    maxBytes = 20 * 1024^2
+  ) %>%
+  addLegend(
+    pal = pal,
+    values = c(minmax(G_future_map)),
+    title = "BIO1 futuro"
+  ) %>%
+  fitBounds(
+    xmin(G_future_map),
+    ymin(G_future_map),
+    xmax(G_future_map),
+    ymax(G_future_map)
+  )
+```
