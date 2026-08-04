@@ -53,289 +53,965 @@ Basado en [Qiao et al. (2018)](https://nsojournals.onlinelibrary.wiley.com/doi/a
      style="width:48%;"> <img src="https://www.meteorologiaenred.com/wp-content/uploads/2019/11/Ecosistema-del-plioceno.jpg.webp" alt="Reconstrucción de un ecosistema del Plioceno" style="width:100%; height:310px; object-fit:contain; display:block;"/> </a>
 :::
 
-## Objetivo de la practica
+## Objetivo de la práctica
 
-Que aprendan a **calibrar** y **transferir** un modelo de nicho ecologico utilizando el paquete de R **Kuenm**, teniendo en consideración los **procedimientos de transferencia** (Campling, Truncation y Extrapolation), y los análisis de **riesgo de extrapolación** (MOP).
+Que los participantes desarrollen un **modelo de nicho ecológico completo con `kuenm2`**, desde la limpieza y preparación de los datos hasta la calibración, selección, exploración y transferencia del modelo.
 
-## Qué es Kuenm
+Durante las transferencias compararemos:
 
-Es un paquete de R desarrollado para el modelado detallado de nichos ecológicos utilizando maxent. Permite la calibración, evaluación, y construcción final de modelos. Así como analisis de riesgo de extrapolación.
+-   **extrapolación libre**;
+-   **clamping**;
+-   **truncamiento o no extrapolación**;
+-   riesgo de extrapolación mediante **MOP**.
 
-[![](https://github.com/kevinlopezreyes/kevinlopezreyes.github.io/blob/master/assets/images/kuenm_t.png?raw=true){width="70%" fig-align="center" style="margin-top: 40px;"}](https://peerj.com/articles/6281/)
+## ¿Qué es kuenm2?
 
-## Flujo de trabajo
+**kuenm2** es un paquete de R para desarrollar modelos de nicho ecológico de manera detallada y reproducible.
 
-[![](https://github.com/kevinlopezreyes/kevinlopezreyes.github.io/blob/master/assets/images/kuenm_wf.jpg?raw=true){width="70%" fig-align="center"}](https://peerj.com/articles/6281/)
+Actualmente permite trabajar con:
+
+-   **Maxnet**, basado en máxima entropía;
+-   **GLM**, modelos lineales generalizados.
+
+Incluye herramientas para preparar y explorar los datos, calibrar y seleccionar modelos, realizar transferencias y analizar su incertidumbre.
+
+::: {style="text-align:center; margin-top:25px;"}
+[![](https://github.com/kevinlopezreyes/kevinlopezreyes.github.io/blob/master/assets/images/kuenm_t.png?raw=true){height="280px"}](https://peerj.com/articles/6281/)
+:::
+
+::: source
+[Documentación oficial de kuenm2](https://marlonecobos.github.io/kuenm2/), [repositorio en GitHub](https://github.com/marlonecobos/kuenm2) y [Cobos et al. (2019)](https://peerj.com/articles/6281/).
+:::
+
+## ¿Qué podemos hacer con kuenm2?
+
+### **Antes de modelar**
+
+-   limpiar y preparar registros de presencia;
+-   explorar los datos geográfica y ambientalmente;
+-   crear particiones de entrenamiento y evaluación.
+
+### **Durante el modelado**
+
+-   calibrar múltiples modelos candidatos;
+-   seleccionar modelos mediante varios criterios;
+-   examinar importancia de variables y curvas de respuesta;
+-   proyectar los modelos hacia escenarios nuevos.
+
+### **Después de modelar**
+
+-   comparar predicciones;
+-   cuantificar su variabilidad;
+-   analizar el riesgo de extrapolación mediante MOP.
+
+## Flujo de trabajo de kuenm2
+
+[![](https://github.com/marlonecobos/kuenm2/blob/main/man/figures/kuenm2_map_gs.png?raw=true){height="700px" fig-align="center"}](https://marlonecobos.github.io/kuenm2/)
+
+::: source
+Figura tomada de la [documentación oficial de kuenm2](https://github.com/marlonecobos/kuenm2), distribuida bajo licencia GPL ≥ 3.
+:::
+
+## Estructura de la práctica
+
+**Seguiremos las etapas descritas en las guías oficiales:**
+
+1.  Limpieza básica de los datos.
+2.  Preparación de los datos de calibración.
+3.  Calibración y selección de modelos.
+4.  Ajuste y exploración de los modelos seleccionados.
+5.  Predicción hacia un escenario individual.
+6.  Análisis de variabilidad e incertidumbre.
+
+## Fuente de esta práctica
+
+::: callout-important
+Esta práctica es una **adaptación** de las guías oficiales de `kuenm2`, desarrolladas por Weverton C. F. Trindade, Luis F. Arias-Giraldo, Luis Osorio-Olvera, A. Townsend Peterson y Marlon E. Cobos.
+
+La documentación original contiene más opciones. Recomiendo revisarla!
+:::
+
+### Documentación original
+
+-   [Página oficial de kuenm2](https://marlonecobos.github.io/kuenm2/)
+-   [Guías completas del paquete](https://marlonecobos.github.io/kuenm2/articles/)
+-   [Código fuente en GitHub](https://github.com/marlonecobos/kuenm2)
+-   En R: `help(package = "kuenm2")`
+
+::: source
+El código de `kuenm2` se distribuye bajo licencia [GPL ≥ 3](https://github.com/marlonecobos/kuenm2/blob/main/DESCRIPTION).
+:::
+
+```{r}
+#| eval: false
+
+install.packages("kuenm2")
+
+```
 
 ## Sistema de estudio
 
-[![](https://www.ecdc.europa.eu/sites/default/files/styles/col_lg_12_x2/public/images/Aedes-Albopictus_B.jpg.webp?itok=35KVHCyh){height="380px" fig-align="center"}](https://commons.wikimedia.org/wiki/File:Aedes_Albopictus.jpg)
+[![](https://inaturalist-open-data.s3.amazonaws.com/photos/693781403/original.jpg){height="380px" fig-align="center"}](https://www.inaturalist.org/observations/379337549)
 
-Mosquito tigre (*Aedes albopictus*). Un especie que es vector de los virus del dengue, chikungunya y zika
+Lagartija espinosa azul yucateca (Sceloporus serrifer). Una especie de lagartija de la Peninsula de Yucatan!
 
-- Calibrar un modelo en su área nativa
-- Transferir el modelo a México, presente y en 2050
-- Revisar los resultados
-- Analizar el riesgo de extrapolación
+-   Calibrar un modelo en su área nativa
+-   Transferir el modelo al 2050
+-   Revisar los resultados
+-   Analizar el riesgo de extrapolación
 
 ## Insumos
 
-::: {.columns}
+### Descargar los datos en el siguiente enlace: [DESCARGAR]()
 
-::: {.column width="50%"}
+### Instalar kuenm2
 
-### Registros de presencia
+Instalamos kuenm con la siguiente linea
 
-[Kraemer *et al.* (2015)](https://www.nature.com/articles/sdata201535)
-
-[![](https://github.com/kevinlopezreyes/kevinlopezreyes.github.io/blob/master/assets/images/transferencia/image.png?raw=true){height="300px"}](https://www.nature.com/articles/sdata201535)
-
-:::
-
-::: {.column width="50%"}
-
-### Variables ambientales
-
-[CHELSA](https://www.chelsa-climate.org/)
-
-[![](https://framerusercontent.com/images/bMtBywJpP4C6MtB5J7JEZEhuPGs.png){height="300px"}](https://www.chelsa-climate.org/)
-
-:::
-
-:::
-
-### Descargar los datos
-
-Carpeta con los registros de presencia y las variables ambientales: [DESCARGAR]()
-
-## Instalamos y cargamos todos los paquetes necesarios
-### Estoy utilizando R 4.4.1
-### Necesitaran RTools para instalar Kuenm (yo tengo la versión 4.4)
 ```{r}
 #| echo: true
-# Paquetes necesarios
-library(terra)
+#| eval: false
+# Instalacion desde el CRAN de R
+install.packages("kuenm2")
+```
+
+### Cargamos los paquetes necesarios para la practica
+
+```{r}
+#| echo: true
 library(kuenm2)
-library(sf)
+library(terra)
 library(leaflet)
-library(ggplot2)
-
+library(magrittr)
 ```
 
-## Cargar registros de presencia
+## 1. Limpieza básica de los datos
+
+Antes de estimar un modelo debemos comprobar que los registros de presencia sean consistentes con la especie y con las variables ambientales.
+
+En esta sección:
+
+-   inspeccionaremos los registros originales;
+-   identificaremos errores;
+-   aplicaremos distintos criterios de limpieza;
+-   compararemos los datos antes y después del proceso.
+
+::: source
+Sección adaptada de la guía oficial\
+[Basic Data Cleaning](https://marlonecobos.github.io/kuenm2/articles/basic_data_cleaning.html).
+:::
+
+## Cargar los registros de presencia
+
 ```{r}
 #| echo: true
 
-occ_joint <- read.csv("occ_joint.csv")
-occ_train <- read.csv("occ_train.csv")
-occ_test  <- read.csv("occ_test.csv")
-occ_inv   <- read.csv("occ_inv.csv")
+occ_raw <- read.csv("occ_joint.csv")
 
-head(occ_joint)
+head(occ_raw)
+nrow(occ_raw)
 ```
 
-## Registros nativos e invasores
+## Seleccionar y renombrar columnas
 
-::: {style="width:90%; margin:0 auto;"}
+```{r}
+#| echo: true
 
+occ <- occ_raw[, c(
+  "scientific_name",
+  "longitude",
+  "latitude")]
+
+names(occ) <- c("species", "longitude", "latitude")
+
+head(occ)
+
+```
+
+## Cargar variables ambientales
+
+```{r}
+#| echo: true
+
+variables <- rast(
+  list.files(
+    "M_var/set_1",
+    pattern = ".tif",
+    full.names = TRUE))
+
+plot(variables)
+```
+
+## Definir el área de calibración
+
+Construimos un buffer de 200 km alrededor de los registros y recortamos las variables ambientales.
+
+```{r}
+#| echo: true
+
+# Convertir los registros en un objeto espacial
+registros <- vect(occ, geom = c("longitude", "latitude"),
+                  crs = "EPSG:4326")
+
+# Proyectar a coordenadas métricas
+registros_utm <- project(registros, "EPSG:32616")
+
+# Crear un buffer de 200 km
+M_buffer <- buffer(registros_utm, width = 200000)
+
+# Unir los buffers
+M_buffer <- aggregate(M_buffer)
+
+# Regresar al CRS de las variables
+M_buffer <- project(M_buffer, crs(variables))
+
+# Recortar las variables
+M_var <- crop(variables, M_buffer)
+
+M_var <- mask(M_var, M_buffer)
+
+plot(M_var)
+
+```
+
+## Limpieza básica de los registros
+
+```{r}
+#| echo: true
+
+occ_clean <- initial_cleaning(
+  data = occ,
+  species = "species",
+  x = "longitude",
+  y = "latitude",
+  remove_na = TRUE,
+  remove_empty = TRUE,
+  remove_duplicates = TRUE,
+  by_decimal_precision = TRUE,
+  decimal_precision = 2
+)
+
+nrow(occ)
+nrow(occ_clean)
+```
+
+## Eliminar registros duplicados por celda
+
+Conservamos una sola presencia dentro de cada celda de las variables ambientales.
+
+```{r}
+#| echo: true
+
+set.seed(123)
+
+occ_clean_cell <- remove_cell_duplicates(
+  data = occ_clean,
+  x = "longitude",
+  y = "latitude",
+  raster_layer = M_var[[1]]
+)
+
+nrow(occ_clean)
+nrow(occ_clean_cell)
+```
+
+## Registros antes y después de la limpieza
+
+::: {style="width:90%; margin:40px auto 0 auto;"}
 ```{r}
 #| echo: false
 
-leaflet(width = "100%", height = "650px") %>%
+occ_plot <- occ[complete.cases(
+  occ[, c("longitude", "latitude")]
+), ]
+
+leaflet(
+  width = "100%",
+  height = "650px"
+) %>%
   addTiles() %>%
   addCircleMarkers(
-    data = occ_joint,
-    lng = ~longitude,
-    lat = ~latitude,
-    color = "blue",
-    radius = 3,
-    stroke = FALSE
-  ) %>%
-  addCircleMarkers(
-    data = occ_inv,
+    data = occ_plot,
     lng = ~longitude,
     lat = ~latitude,
     color = "red",
-    radius = 4,
-    stroke = FALSE
+    radius = 5,
+    stroke = FALSE,
+    fillOpacity = 0.5,
+    group = "Registros originales"
   ) %>%
-  addLegend(
-    colors = c("blue", "red"),
-    labels = c("Rango nativo", "México")
-  ) %>%
-  fitBounds(-120, -15, 155, 60)
-```
-
-:::
-
-## Partición de los registros nativos
-
-::: {style="width:90%; margin:0 auto;"}
-
-```{r}
-#| echo: false
-
-leaflet(width = "100%", height = "650px") %>%
-  addTiles() %>%
   addCircleMarkers(
-    data = occ_train,
+    data = occ_clean_cell,
     lng = ~longitude,
     lat = ~latitude,
     color = "blue",
-    radius = 3,
-    stroke = FALSE
+    radius = 4,
+    stroke = FALSE,
+    fillOpacity = 0.9,
+    group = "Registros limpios"
   ) %>%
-  addCircleMarkers(
-    data = occ_test,
-    lng = ~longitude,
-    lat = ~latitude,
-    color = "orange",
-    radius = 3,
-    stroke = FALSE
+  addLayersControl(
+    overlayGroups = c(
+      "Registros originales",
+      "Registros limpios"
+    ),
+    options = layersControlOptions(
+      collapsed = FALSE
+    )
   ) %>%
   addLegend(
-    colors = c("blue", "orange"),
-    labels = c("Entrenamiento", "Evaluación")
+    colors = c("red", "blue"),
+    labels = c(
+      "Registros originales",
+      "Registros limpios: uno por celda"
+    )
   ) %>%
-  fitBounds(60, -15, 150, 55)
+  fitBounds(
+    min(occ_plot$longitude),
+    min(occ_plot$latitude),
+    max(occ_plot$longitude),
+    max(occ_plot$latitude)
+  )
 ```
-
 :::
 
-## Variables del rango nativo
+## 2. Preparación de los datos
+
+`prepare_data()`:
+
+-   extrae los valores ambientales de las presencias;
+-   genera puntos de fondo dentro del área de calibración;
+-   divide los registros para evaluar los modelos;
+-   crea las combinaciones de parámetros que serán calibradas.
+
+::: source
+[Documentación de `prepare_data()`](https://marlonecobos.github.io/kuenm2/reference/prepare_data.html)
+:::
+
+## 2.1. Configuración
+
+Utilizaremos:
+
+-   algoritmo: **Maxnet**;
+-   cuatro particiones;
+-   5,000 puntos de fondo;
+-   dos tipos de respuesta;
+-   tres valores de regularización.
+
+Esto produce **seis modelos candidatos**.
 
 ```{r}
 #| echo: true
 
-M_var <- rast(
-  list.files(
-    "M_var/set_1",
-    pattern = "^bio_.*\\.tif$",
-    full.names = TRUE
-  )
-)
+set.seed(123)
+
+datos_calibracion <- prepare_data(
+  algorithm = "maxnet",
+  occ = occ_clean_cell,
+  x = "longitude",
+  y = "latitude",
+  raster_variables = M_var,
+  min_number = 4,
+  species = "Sceloporus serrifer",
+  partition_method = "kfolds",
+  n_partitions = 4,
+  n_background = 1000,
+  features = c("l", "q"),
+  r_multiplier = c(0.5, 1, 2))
 ```
 
-```{r}
-#| echo: false
-terraOptions(progress = 0)
-M_map <- aggregate(M_var[[1]], fact = 5)
-
-pal <- colorNumeric(
-  "viridis",
-  domain = c(minmax(M_map)),
-  na.color = "transparent"
-)
-
-leaflet(width = "100%", height = "600px") %>%
-  addTiles() %>%
-  addRasterImage(
-    M_map,
-    colors = pal,
-    opacity = 0.8,
-    maxBytes = 20 * 1024^2
-  ) %>%
-  addLegend(
-    pal = pal,
-    values = c(minmax(M_map)),
-    title = "BIO1"
-  ) %>%
-  fitBounds(
-    xmin(M_map),
-    ymin(M_map),
-    xmax(M_map),
-    ymax(M_map)
-  )
-```
-
-## México en el presente (zona de invasión)
+## 2.2. Datos preparados
 
 ```{r}
 #| echo: true
 
-G_present <- rast(
-  list.files(
-    "G_var/set_1",
-    pattern = "^bio_.*\\.tif$",
-    full.names = TRUE
-  )
-)
+datos_calibracion
 ```
 
-```{r}
-#| echo: false
-terraOptions(progress = 0)
-G_present_map <- aggregate(G_present[[1]], fact = 3)
+El resumen permite comprobar:
 
-pal <- colorNumeric(
-  "viridis",
-  domain = c(minmax(G_present_map)),
-  na.color = "transparent"
-)
+-   número de presencias y puntos de fondo;
+-   variables utilizadas;
+-   método de partición;
+-   número de modelos candidatos.
 
-leaflet(width = "100%", height = "600px") %>%
-  addTiles() %>%
-  addRasterImage(
-    G_present_map,
-    colors = pal,
-    opacity = 0.8,
-    maxBytes = 20 * 1024^2
-  ) %>%
-  addLegend(
-    pal = pal,
-    values = c(minmax(G_present_map)),
-    title = "BIO1 presente"
-  ) %>%
-  fitBounds(
-    xmin(G_present_map),
-    ymin(G_present_map),
-    xmax(G_present_map),
-    ymax(G_present_map)
-  )
-```
+## 3. Calibración de modelos
 
-## México en el futuro (zona de invasión en el futuro)
+Los seis modelos candidatos serán evaluados utilizando cuatro criterios:
+
+1. ausencia de curvas cóncavas;
+2. tasa de omisión máxima de 10%;
+3. significancia mediante ROC parcial;
+4. menor complejidad mediante AICc.
+
+## 3.1. Calibrar los modelos candidatos
 
 ```{r}
 #| echo: true
 
-G_future <- rast(
-  list.files(
-    "G_var/set_2",
-    pattern = "^bio_.*\\.tif$",
-    full.names = TRUE
-  )
-)
+calibracion <- calibration(
+  data = datos_calibracion,
+  remove_concave = TRUE,
+  error_considered = c(5, 10),
+  omission_rate = 10,
+  parallel = FALSE,
+  ncores = 1)
+```
+
+## 3.2. Modelos seleccionados
+
+```{r}
+#| echo: true
+
+calibracion
+```
+
+```{r}
+#| echo: true
+
+calibracion$selected_models
+```
+
+Los modelos seleccionados:
+
+- tienen respuestas ambientalmente coherentes;
+- omiten menos del 10% de las presencias de evaluación;
+- predicen mejor que un modelo aleatorio;
+- presentan un delta AICc menor que 2.
+
+::: source
+[Documentación de calibración de `kuenm2`](https://marlonecobos.github.io/kuenm2/articles/model_calibration.html)
+:::
+
+## 4. Ajustar los modelos seleccionados
+
+`fit_selected()` vuelve a ajustar las configuraciones seleccionadas utilizando:
+
+- todos los datos disponibles;
+- cuatro réplicas correspondientes a las particiones;
+- salida de idoneidad `cloglog`.
+
+```{r}
+#| echo: true
+
+modelos_finales <- fit_selected(
+  calibration_results = calibracion,
+  replicate_method = "kfolds",
+  n_replicates = 4,
+  type = "cloglog",
+  progress_bar = FALSE,
+  verbose = FALSE,
+  seed = 123)
+```
+
+## 4.1. Modelos finales
+
+```{r}
+#| echo: true
+
+modelos_finales
+```
+
+Cada configuración seleccionada contiene:
+
+- cuatro modelos ajustados dejando fuera una partición;
+- un modelo completo ajustado con todos los datos.
+
+## 4.2. Curvas de respuesta
+
+Las curvas muestran cómo cambia la idoneidad estimada a lo largo de cada variable ambiental.
+
+```{r}
+#| echo: true
+#| fig-width: 12
+#| fig-height: 6.5
+#| out-width: 90%
+#| fig-align: center
+
+all_response_curves(
+  models = modelos_finales,
+  show_variability = TRUE,
+  show_lines = TRUE,
+  extrapolate = FALSE,
+  mfrow = c(2, 2),
+  col = "skyblue4")
+```
+
+Las líneas muestran la respuesta obtenida en las cuatro réplicas. Las líneas verticales discontinuas delimitan los valores utilizados para ajustar los modelos.
+
+## 4.3. Importancia de las variables
+
+```{r}
+#| echo: true
+
+importancia <- variable_importance(
+  models = modelos_finales,
+  progress_bar = FALSE,
+  verbose = FALSE)
 ```
 
 ```{r}
 #| echo: false
+#| fig-width: 10
+#| fig-height: 6
+#| out-width: 80%
+#| fig-align: center
 
-G_future_map <- aggregate(G_future[[1]], fact = 3)
+plot_importance(
+  importancia,
+  main = "Importancia de las variables")
+```
 
-pal <- colorNumeric(
-  "viridis",
-  domain = c(minmax(G_future_map)),
-  na.color = "transparent"
+Una contribución mayor indica que retirar esa variable produce una pérdida más grande en el ajuste del modelo.
+
+::: source
+[Guía de ajuste y exploración de modelos de `kuenm2`](https://marlonecobos.github.io/kuenm2/articles/fit_explore_models.html)
+:::
+
+
+
+# 5. Transferencia a un escenario futuro
+
+## Cargar las variables climáticas futuras
+
+Utilizaremos las condiciones proyectadas por **MIROC6** para el escenario **SSP5-8.5** durante **2041–2060**.
+
+```{r}
+#| echo: true
+
+future_all <- rast("G_var/set_1/future/bios.tif")
+
+G_future <- future_all[[c(1, 4, 12, 15)]]
+
+names(G_future) <- names(M_var)
+
+G_future
+```
+
+## Recortar las variables futuras
+
+Las variables futuras se recortan utilizando la misma área empleada para calibrar el modelo.
+
+```{r}
+#| echo: true
+
+
+G_var <- crop(G_future, M_buffer)
+
+G_var <- mask(G_var, M_buffer)
+
+G_var <- mask(G_var, M_var[[1]])
+
+names(G_var) <- names(M_var)
+plot(G_var)
+
+```
+
+## Verificar las variables
+
+Los predictores presentes y futuros deben tener los mismos nombres y geometría.
+
+```{r}
+#| echo: true
+
+names(M_var)
+names(G_var)
+
+compareGeom(M_var, G_var)
+```
+
+## Proyección en las condiciones actuales
+
+```{r}
+#| echo: true
+
+prediccion_actual <- predict_selected(models = modelos_finales,
+  new_variables = M_var,
+  type = "cloglog",
+  consensus = "mean",
+  extrapolation_type = "E",
+  progress_bar = FALSE)
+
+mapa_actual <- prediccion_actual$General_consensus$mean
+```
+
+## Idoneidad ambiental actual
+
+```{r}
+#| echo: false
+#| fig-width: 12
+#| fig-height: 6.5
+#| fig-align: center
+
+plot(mapa_actual, col = hcl.colors(100, "YlOrRd", rev = TRUE), range = c(0, 1),
+  main = "Condiciones actuales")
+
+points(occ_clean_cell$longitude, occ_clean_cell$latitude, pch = 20, cex = 0.8)
+
+```
+
+## Transferencia al futuro
+
+Realizaremos la transferencia utilizando los tres procedimientos:
+
+- **E:** extrapolación libre.
+- **EC:** extrapolación con *clamping*.
+- **NE:** sin extrapolación.
+
+```{r}
+#| echo: true
+
+prediccion_E <- predict_selected(
+  models = modelos_finales,
+  new_variables = G_var,
+  type = "cloglog",
+  consensus = "mean",
+  extrapolation_type = "E",
+  progress_bar = FALSE)
+
+prediccion_EC <- predict_selected(
+  models = modelos_finales,
+  new_variables = G_var,
+  type = "cloglog",
+  consensus = "mean",
+  extrapolation_type = "EC",
+  progress_bar = FALSE)
+
+prediccion_NE <- predict_selected(
+  models = modelos_finales,
+  new_variables = G_var,
+  type = "cloglog",
+  consensus = "mean",
+  extrapolation_type = "NE",
+  progress_bar = FALSE)
+```
+
+## Obtener las predicciones
+
+```{r}
+#| echo: true
+
+mapa_E  <- prediccion_E$General_consensus$mean
+mapa_EC <- prediccion_EC$General_consensus$mean
+mapa_NE <- prediccion_NE$General_consensus$mean
+```
+
+## Comparación de los procedimientos
+
+```{r}
+#| echo: false
+#| fig-width: 13
+#| fig-height: 7
+#| fig-align: center
+
+mapas <- c(mapa_actual, mapa_E, mapa_EC, mapa_NE)
+
+names(mapas) <- c("Presente", "Futuro: extrapolación", "Futuro: clamping",
+                  "Futuro: sin extrapolación")
+
+plot(mapas, col = hcl.colors(100, "YlOrRd", rev = TRUE),
+  range = c(0, 1),
+  nc = 2)
+
+```
+
+## Cambios entre presente y futuro
+
+Compararemos las áreas que permanecen adecuadas, se pierden o se ganan bajo cada procedimiento.
+
+```{r}
+#| echo: true
+
+cambios_E <- prediction_changes(
+  current_predictions = mapa_actual,
+  new_predictions = mapa_E,
+  fitted_models = modelos_finales,
+  predicted_to = "future")
+
+cambios_EC <- prediction_changes(
+  current_predictions = mapa_actual,
+  new_predictions = mapa_EC,
+  fitted_models = modelos_finales,
+  predicted_to = "future")
+
+cambios_NE <- prediction_changes(
+  current_predictions = mapa_actual,
+  new_predictions = mapa_NE,
+  fitted_models = modelos_finales,
+  predicted_to = "future")
+```
+
+## Cambios en la idoneidad ambiental
+
+```{r}
+#| echo: false
+#| fig-width: 13
+#| fig-height: 5.5
+#| fig-align: center
+
+cambios <- c(cambios_E, cambios_EC, cambios_NE)
+
+names(cambios) <- c("Extrapolación", "Clamping", "Sin extrapolación")
+
+plot(cambios, nc = 3)
+```
+
+## Guardar los resultados
+
+```{r}
+#| echo: true
+
+dir.create("Resultados", showWarnings = FALSE)
+
+writeRaster(mapas, "Resultados/predicciones.tif", overwrite = TRUE)
+
+writeRaster(cambios, "Resultados/cambios.tif", overwrite = TRUE)
+```
+
+
+
+# 6. Incertidumbre y riesgo de extrapolación
+
+## ¿Qué evaluaremos?
+
+En esta práctica evaluaremos dos fuentes de incertidumbre:
+
+- la **variabilidad entre réplicas** del modelo;
+- el **riesgo de extrapolación** mediante el análisis MOP.
+
+Como utilizamos un solo modelo climático, no evaluaremos variabilidad entre GCM.
+
+## Variabilidad entre réplicas
+
+La desviación estándar muestra dónde las réplicas producen predicciones diferentes.
+
+```{r}
+#| echo: true
+
+modelo_id <- grep(
+  "^Model_",
+  names(prediccion_actual),
+  value = TRUE
+)[1]
+
+variabilidad_actual <- app(
+  prediccion_actual[[modelo_id]]$Replicates,
+  sd,
+  na.rm = TRUE
 )
 
-leaflet(width = "100%", height = "600px") %>%
-  addTiles() %>%
-  addRasterImage(
-    G_future_map,
-    colors = pal,
-    opacity = 0.8,
-    maxBytes = 20 * 1024^2
-  ) %>%
-  addLegend(
-    pal = pal,
-    values = c(minmax(G_future_map)),
-    title = "BIO1 futuro"
-  ) %>%
-  fitBounds(
-    xmin(G_future_map),
-    ymin(G_future_map),
-    xmax(G_future_map),
-    ymax(G_future_map)
-  )
+variabilidad_futura <- app(
+  prediccion_EC[[modelo_id]]$Replicates,
+  sd,
+  na.rm = TRUE
+)
 ```
+
+## Variabilidad geográfica del modelo
+
+```{r}
+#| echo: false
+#| fig-width: 12
+#| fig-height: 5.5
+#| fig-align: center
+
+variabilidad <- c(
+  variabilidad_actual,
+  variabilidad_futura
+)
+
+names(variabilidad) <- c(
+  "Presente",
+  "Futuro"
+)
+
+plot(
+  variabilidad,
+  col = hcl.colors(100, "Inferno"),
+  range = c(0, max(global(
+    variabilidad,
+    "max",
+    na.rm = TRUE
+  )[, 1])),
+  nc = 2
+)
+```
+
+Los valores altos indican regiones donde las réplicas del modelo producen predicciones menos consistentes.
+
+## Riesgo de extrapolación
+
+El análisis **MOP** compara las condiciones utilizadas para calibrar el modelo con las condiciones del escenario futuro.
+
+Permite identificar:
+
+- condiciones dentro de los rangos de calibración;
+- variables fuera de esos rangos;
+- grado de disimilitud ambiental.
+
+::: source
+Basado en [Owens et al. (2013)](https://doi.org/10.1016/j.ecolmodel.2013.04.011) y la [documentación de kuenm2](https://marlonecobos.github.io/kuenm2/).
+:::
+
+## Análisis MOP
+
+```{r}
+#| echo: true
+
+MOP_futuro <- single_mop(
+  data = modelos_finales,
+  new_variables = G_var,
+  subset_variables = TRUE,
+  type = "detailed",
+  na_in_range = FALSE,
+  calculate_distance = TRUE,
+  where_distance = "all",
+  distance = "euclidean",
+  scale = TRUE,
+  center = TRUE,
+  rescale_distance = TRUE,
+  progress_bar = FALSE
+)
+```
+
+## Resultados del MOP
+
+```{r}
+#| echo: false
+#| fig-width: 13
+#| fig-height: 5
+#| fig-align: center
+
+par(mfrow = c(1, 3))
+
+plot(
+  MOP_futuro$mop_basic,
+  main = "Condiciones no análogas",
+  col = c("grey90", "#D55E00")
+)
+
+plot(
+  MOP_futuro$mop_simple,
+  main = "Variables fuera del rango",
+  col = hcl.colors(5, "YlOrRd")
+)
+
+plot(
+  MOP_futuro$mop_distances,
+  main = "Disimilitud ambiental",
+  col = hcl.colors(100, "Inferno")
+)
+
+par(mfrow = c(1, 1))
+```
+
+## ¿Cómo interpretamos los resultados?
+
+- **MOP básico:** identifica celdas con al menos una variable fuera del rango de calibración.
+- **MOP simple:** indica cuántas variables están fuera de ese rango.
+- **Distancia ambiental:** valores altos indican condiciones más diferentes a las utilizadas para calibrar.
+
+MOP no determina si la predicción es incorrecta. Indica dónde su interpretación requiere mayor precaución.
+
+## Condiciones por encima del rango
+
+```{r}
+#| echo: false
+#| fig-width: 12
+#| fig-height: 6
+#| fig-align: center
+
+plot(
+  MOP_futuro$mop_detailed$towards_high_end,
+  main = paste(
+    names(G_var),
+    "por encima"
+  ),
+  col = c("grey90", "#D55E00"),
+  nc = 2
+)
+```
+
+Estas regiones presentan valores futuros superiores al máximo utilizado para calibrar el modelo.
+
+## Condiciones por debajo del rango
+
+```{r}
+#| echo: false
+#| fig-width: 12
+#| fig-height: 6
+#| fig-align: center
+
+plot(
+  MOP_futuro$mop_detailed$towards_low_end,
+  main = paste(
+    names(G_var),
+    "por debajo"
+  ),
+  col = c("grey90", "#0072B2"),
+  nc = 2
+)
+```
+
+Estas regiones presentan valores futuros inferiores al mínimo utilizado para calibrar el modelo.
+
+## MOP y procedimientos de transferencia
+
+El procedimiento de transferencia determina qué ocurre en las regiones identificadas por MOP:
+
+- **E:** el modelo continúa sus respuestas fuera del rango;
+- **EC:** las respuestas se mantienen en el límite conocido;
+- **NE:** las condiciones fuera del rango reciben idoneidad cero.
+
+Por eso, el mapa MOP debe interpretarse junto con las curvas de respuesta y las predicciones obtenidas mediante cada procedimiento.
+
+## Guardar los resultados finales
+
+```{r}
+#| echo: true
+
+writeRaster(
+  variabilidad,
+  "Resultados/variabilidad_replicas.tif",
+  overwrite = TRUE
+)
+
+writeRaster(
+  MOP_futuro$mop_basic,
+  "Resultados/MOP_basico.tif",
+  overwrite = TRUE
+)
+
+writeRaster(
+  MOP_futuro$mop_simple,
+  "Resultados/MOP_variables_fuera_rango.tif",
+  overwrite = TRUE
+)
+
+writeRaster(
+  MOP_futuro$mop_distances,
+  "Resultados/MOP_disimilitud.tif",
+  overwrite = TRUE
+)
+
+saveRDS(
+  MOP_futuro,
+  "Resultados/MOP_completo.rds"
+)
+```
+
+## Conclusiones
+
+- La transferencia depende del modelo estimado y de las condiciones del nuevo escenario.
+- Los procedimientos **E**, **EC** y **NE** producen resultados diferentes únicamente donde existe extrapolación.
+- La variabilidad entre réplicas muestra la estabilidad de las predicciones.
+- MOP permite localizar condiciones ambientales no representadas durante la calibración.
+- Las transferencias deben interpretarse considerando conjuntamente las predicciones, las curvas de respuesta y el riesgo de extrapolación.
+
+
+
+
+
+
+
+
