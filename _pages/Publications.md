@@ -8,9 +8,9 @@ share: false
 ---
 [Google Scholar profile](https://scholar.google.com/citations?user=5S9qAwkAAAAJ&hl=es)
 # 2026
-  + Patrón-Rivero, C & **López-Reyes, K**. (2026). Pairwise and multivariate implementations for variable selection and importance implications. Environmental Modelling & Software. [SUBMITTED]
+  + Patrón-Rivero, C & **López-Reyes, K**. (2026). Pairwise and multivariate implementations for variable selection and importance implications. Proceedings B. [SUBMITTED]
 
-  + **López-Reyes, K**. & Patrón-Rivero, C. (2026). Aggressiveness and escape behavior of the black spiny-tailed iguana (*Ctenosaura similis*) across human-exposure contexts. Journal of Ethology. [SUBMITTED]
+  + **López-Reyes, K**. & Patrón-Rivero, C. (2026). Aggressiveness and escape behavior of the black spiny-tailed iguana (*Ctenosaura similis*) across human-exposure contexts. Ethology Ecology & Evolution. [SUBMITTED]
 
   + **López-Reyes, K**., Kass, J., Yañez-Arenas, C. & Villalobos, F. (2026). Limited role of evolutionary, environmental, and historical factors in shaping the bimodal latitudinal species richness gradient of *Sceloporus* lizards. Ecological Research. [SUBMITTED]
 
